@@ -18,3 +18,6 @@ exit 0
 EOF
     chmod +x /etc/rc.local
 fi
+
+systemctl enable rc.local
+
