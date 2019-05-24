@@ -44,25 +44,28 @@ sudo apt-get autoremove -y # avoid repeated no-longer-required annoyance
 sudo ./change-autologin-user_1804.sh # we go for a timed login instead. After 5 seconds, the TX2 will automatically boot under apsync user.
 sudo ./remove-unattended-upgrades # 
 sudo ./ensure_rc_local.sh
-sudo ./disable_console.sh # does not seem to work??
 
-sudo reboot # ensure hostname correct / console disabling OK / autologin working
+sudo reboot # ensure hostname correct / autologin working
 ssh apsync@apsync
 
-pushd GitHub/companion/Nvidia_JTX1/Ubuntu
-# consider exporting a http proxy:
-# export http_proxy=http://bogg.local:3128/
+pushd GitHub/companion/Nvidia_JTX2_JP42/Ubuntu
 time sudo -E ./2_install_packages.sh # 20m
-
 time sudo -E ./install_niceties || echo "Failed" # 20s
-time sudo -E ./3_wifi_access_point.sh # 20s
-time sudo ./wifi_client.sh # instant
+
+# setup of the ardupilot access point
+sudo ./3_wifi_access_point_JP42.sh
+# the TX2 will go into AP mode when you logon under apsync and will set up an access point with the SSID ardupilot.
+# You can swap between AP mode and wifi client mode by executing from the apsync home directory:
+# sudo ~/switch_AP_client_mode.sh
+
 sudo ./4_setup_log_rotation # instant
+# we will install mavproxy, however cmavnode will be used 
+sudo ./5_setup_mavproxy.sh # instant
+
 time sudo -E ./6_setup_video.sh # 1m
 time sudo -E ./8_setup_cmavnode.sh # ~4m
 time sudo -E ./setup_mavlink-router # ~2m
 time sudo -E ./7_dflogger.sh # ~210s
-sudo ./5_setup_mavproxy.sh # instant
 time sudo -E ./setup-video-streaming # 11s
 
 time sudo -E apt-get install -y libxml2-dev libxslt1.1 libxslt1-dev

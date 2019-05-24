@@ -16,6 +16,11 @@ nmcli connection add type wifi ifname '*' con-name ardupilot autoconnect no ssid
 nmcli connection modify ardupilot 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
 # Set a WPA password to ardupilot 
 nmcli connection modify  rdupilot 802-11-wireless-security.key-mgmt wpa-psk 802-11-wireless-security.psk ardupilot
-# Enable it (run this command each time you want to enable the access point)
+# Enable it (requires reboot and logon under apsync)
+echo "options bcmdhd op_mode=2" >> /etc/modprobe.d/bcmdhd.conf
 echo "# Invoke access point when logging in as apsync user" >> /home/apsync/.profile
-echo "nmcli connection up my-hotspot" >> /home/apsync/.profile
+echo "nmcli connection up ardupilot" >> /home/apsync/.profile
+cp ./switch_AP_client_mode.sh /home/apsync/.
+chmod 777 ./switch_AP_client_mode.sh
+
+
