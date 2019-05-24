@@ -8,8 +8,6 @@ fi
 set -e
 set -x
 
-. config.env
-
 # this script allows to toggle between AP mode and client mode
 if nmcli d | grep "ardupilot"; then
 	# switch back to client mode

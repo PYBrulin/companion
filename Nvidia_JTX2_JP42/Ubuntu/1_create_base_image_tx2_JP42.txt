@@ -46,7 +46,6 @@ sudo ./remove-unattended-upgrades #
 sudo ./ensure_rc_local.sh
 
 sudo reboot # ensure hostname correct / autologin working
-ssh apsync@apsync
 
 pushd GitHub/companion/Nvidia_JTX2_JP42/Ubuntu
 time sudo -E ./2_install_packages.sh # 20m
@@ -78,6 +77,11 @@ time sudo ./install_apweb # 2m
 
 # reboot and test image according to testing.txt
 sudo reboot
+
+# test if AP is set up correctly and if you can connect from a remote computer
+ssh-copy-id apsync@10.42.0.1 #check the correct IP address for your installation
+ssh apsync@10.42.0.1
+exit
 
 # Step 4: cleanup
 time (pushd ~/GitHub/companion/Nvidia_JTX1/Ubuntu && sudo ./clean-for-imaging)

@@ -19,7 +19,8 @@ nmcli connection modify  rdupilot 802-11-wireless-security.key-mgmt wpa-psk 802-
 # Enable it (requires reboot and logon under apsync)
 echo "options bcmdhd op_mode=2" >> /etc/modprobe.d/bcmdhd.conf
 echo "# Invoke access point when logging in as apsync user" >> /home/apsync/.profile
-echo "nmcli connection up ardupilot" >> /home/apsync/.profile
+echo "if nmcli d | grep ardupilot; then sleep 1; else nmcli connection up ardupilot; fi" >> /home/apsync/.profile
+
 cp ./switch_AP_client_mode.sh /home/apsync/.
 chmod 777 ./switch_AP_client_mode.sh
 
