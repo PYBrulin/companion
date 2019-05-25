@@ -32,7 +32,7 @@ mkdir GitHub
 pushd GitHub
 
 # insert here the link to the master repository
-# git clone https://github.com/ArduPilot/companion.git
+# my repository until we have a stable version ready 
 git clone --single-branch --branch "next-tx2" https://github.com/mtbsteve/companion.git
 
 pushd companion/Nvidia_JTX2_JP42/Ubuntu
@@ -41,6 +41,7 @@ sudo ./set-hostname   # reset the machine's hostname
 sudo perl -pe s/<enter your hostname here>/apsync/ -i /etc/hosts
 
 sudo apt-get autoremove -y # avoid repeated no-longer-required annoyance
+# The TX2 will autologin with apsync user after 5 seconds. During that time, you can normally logon to the TX2 console with any other user. 
 sudo ./change-autologin-user_1804.sh # we go for a timed login instead. After 5 seconds, the TX2 will automatically boot under apsync user.
 sudo ./remove-unattended-upgrades # 
 sudo ./ensure_rc_local.sh
