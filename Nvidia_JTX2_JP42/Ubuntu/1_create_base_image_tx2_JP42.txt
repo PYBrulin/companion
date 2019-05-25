@@ -1,6 +1,6 @@
 # TX2 setup script for use as companion computer with Jetpack 4.2 release
 
-# STEP1: install NVidia image onto JTX2 (skip this step if you already have a factory image (created in Step2) for the current release of JetPack.  This is required as the flashing of the APsync image only updates one partition - the other partitions on the device must match the one we are putting onto the device.
+# STEP1: install NVidia image onto JTX2 (skip this step if you already have a factory image created for current release of Jetpack)
 
 # Download the SDKManager to your host machine and follow all the instructions here: 
 # https://developer.nvidia.com/embedded/jetpack
@@ -90,23 +90,13 @@ time (pushd ~/GitHub/companion/Nvidia_JTX1/Ubuntu && sudo ./clean-for-imaging)
 
 sudo poweroff
 
-# Step 5: download apsync image from TX2:
-#    put TX2 into bootloader mode: Hold Force Recovery button (aka "REC"), press Reset button(aka "RST"), Release Force Recovery button
-watch lsusb
-BASEDIR=~/jetpack
-L4T=$BASEDIR/64_TX2/Linux_for_Tegra
-#    run download_image.sh from this repo:
-TIMESTAMP=`date '+%Y%m%d%H%M'`
-# consider using an absolute path for IMAGE_NAME here! e.g. /vagrant/...
-IMAGE_NAME="/vagrant/apsync-tx2-$TIMESTAMP.img"
+# Step 5: create backup image with ApSync installed
 
-cd $L4T
-time sudo ./flash.sh -r -k APP -G $IMAGE_NAME jetson-tx2 mmcblk0p1 # about 30 minutes
+# Follow the steps as explained here: https://elinux.org/Jetson/TX2_Cloning
+# The TX2 must be connected to the host machine over USB and entered into recovery mode. Then enter on the host machine:
 
-# on host machine (not on the Vagrant VM!)
-ls -l $IMAGE_NAME # about 8GB
-time xz --verbose -e $IMAGE_NAME # about 1.5 hours
-COMPRESSED_IMAGE_NAME="$IMAGE_NAME.xz"
-ls -l --si  $COMPRESSED_IMAGE_NAME # ~3.2GB
-BASE_COMPRESSED_IMAGE_NAME=$(basename "$COMPRESSED_IMAGE_NAME")
-time rsync -aP $COMPRESSED_IMAGE_NAME autotest@autotest.ardupilot.org:APM/buildlogs/binaries/Companion/next/$BASE_COMPRESSED_IMAGE_NAME # about 11.5 hours
+cd home/nvidia/nvidia_sdk/JetPack_4.2_Linux_P3310/Linux_for_Tegra
+sudo ./flash.sh -r -k APP -G mybackup_Jetpack42_apsync.img jetson-tx2 mmcblk0p1
+# for "mybackup_Jetpack42" add your desired name for the backup image file. This will take about 30 ime sudo ./flash.sh -r -k APP -G $IMAGE_NAME jetson-tx2 mmcblk0p1 # about 30 minutes
+
+# Done!
