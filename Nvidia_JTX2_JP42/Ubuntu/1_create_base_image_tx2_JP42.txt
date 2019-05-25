@@ -80,7 +80,7 @@ time sudo ./install_apweb # 2m
 sudo reboot
 
 # test if AP is set up correctly and if you can connect from a remote computer
-ssh-copy-id apsync@10.42.0.1 #check the correct IP address for your installation
+ssh-copy-id apsync@10.42.0.1 #check the correct IP address for your installation with ifconfig 
 ssh apsync@10.42.0.1
 exit
 
@@ -97,6 +97,6 @@ sudo poweroff
 
 cd home/nvidia/nvidia_sdk/JetPack_4.2_Linux_P3310/Linux_for_Tegra
 sudo ./flash.sh -r -k APP -G mybackup_Jetpack42_apsync.img jetson-tx2 mmcblk0p1
-# for "mybackup_Jetpack42" add your desired name for the backup image file. This will take about 30 ime sudo ./flash.sh -r -k APP -G $IMAGE_NAME jetson-tx2 mmcblk0p1 # about 30 minutes
+# for "mybackup_Jetpack42" add your desired name for the backup image file. This will take about 30 min
 
 # Done!
