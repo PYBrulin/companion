@@ -4,6 +4,10 @@
 
 # Download the SDKManager to your host machine and follow all the instructions here: 
 # https://developer.nvidia.com/embedded/jetpack
+# If you are using the Auvidea J120 breakout board or another Auvidea board, install the required drivers as described at:
+# https://auvidea.eu/firmware
+# Download the corresponding firmare version for your board and follow the instructions provided by Auvidea. At the time of this writeup, the Auvidea firmare 2.0 as of May 2019 has to be used.
+
 
 # STEP2: backup the TX2 kernel before installing APSync so that you can roll back in case something breaks or messes up
 
