@@ -40,15 +40,15 @@ pushd GitHub
 git clone --single-branch --branch "next-tx2" https://github.com/mtbsteve/companion.git
 
 pushd companion/Nvidia_JTX2_JP42/Ubuntu
-sudo ./set-hostname   # reset the machine's hostname
-# if your hostname is not tegra-ubuntu, then execute the following statement instead:
-sudo perl -pe s/<enter your hostname here>/apsync/ -i /etc/hosts
+sudo ./set-hostname   # reset the machine's hostname to apsync
 
-sudo apt-get autoremove -y # avoid repeated no-longer-required annoyance
+sudo apt-get autoremove -y # remove packages that were automatically
+# installed to satisfy dependencies for other packages and are now no longer needed
+
 # The TX2 will autologin with apsync user after 5 seconds. During that time, you can normally logon to the TX2 console with any other user. 
 sudo ./change-autologin-user_1804.sh # we go for a timed login instead. After 5 seconds, the TX2 will automatically boot under apsync user.
-sudo ./remove-unattended-upgrades # 
-sudo ./ensure_rc_local.sh
+sudo ./remove-unattended-upgrades # disable unattended upgrades of Ubuntu
+sudo ./ensure_rc_local.sh #  add /etc/local.rc file to allow to execute commands at system startup
 
 sudo reboot # ensure hostname correct / autologin working
 
@@ -58,11 +58,19 @@ time sudo -E ./install_niceties || echo "Failed" # 20s
 
 # setup of the ardupilot access point
 sudo ./3_wifi_access_point_JP42.sh
-# the TX2 will go into AP mode when you logon under apsync and will set up an access point with the SSID ardupilot.
+# the TX2 will go into AP mode when you logon under apsync and will set up an access point with the SSID ardupilot and the IP address 10.0.1.128
 # You can swap between AP mode and wifi client mode by executing from the apsync home directory:
 # sudo ~/switch_AP_client_mode.sh
 
-sudo ./4_setup_log_rotation # instant
+# Decide which board you are using to connect to the flight controller via mavlink:
+# If you are using the J17 connector on the Nvidia TX2 development board
+# then  edit the config.env file and set 
+# export TELEM_SERIAL_PORT=/dev/ttyTHS2
+# if you are using the Auvidea J120 board, then set
+# export TELEM_SERIAL_PORT=/dev/ttyTHS1
+
+
+sudo ./4_setup_log_rotation # just keep 1 week of backups and compress  
 # we will install mavproxy, however cmavnode will be used 
 sudo ./5_setup_mavproxy.sh # instant
 
@@ -77,24 +85,23 @@ time sudo pip install future lxml # 4m
 time sudo ./install_pymavlink # new version required for apweb #1m
 time sudo ./install_apweb # 2m
 
-# OpenKAI not available due to OpenCV compatability issues....
-# time sudo -E ./install_openkai.sh
 
+Step 4: Testing
 # reboot and test image according to testing.txt
 sudo reboot
 
 # test if AP is set up correctly and if you can connect from a remote computer
-ssh-copy-id apsync@10.42.0.1 #check the correct IP address for your installation with ifconfig 
-ssh apsync@10.42.0.1
+ssh-copy-id apsync@10.0.1.128 #check the correct IP address for your installation with ifconfig 
 exit
 
-# Step 4: cleanup
-time (pushd ~/GitHub/companion/Nvidia_JTX1/Ubuntu && sudo ./clean-for-imaging)
+Now test according to instructions in ../../Common/Ubuntu/testing.txt
 
+# Step 5: cleanup
+time (pushd ~/GitHub/companion/Nvidia_JTX1/Ubuntu && sudo ./clean-for-imaging)
 
 sudo poweroff
 
-# Step 5: create backup image with ApSync installed
+# Step 6: create backup image with ApSync installed
 
 # Follow the steps as explained here: https://elinux.org/Jetson/TX2_Cloning
 # The TX2 must be connected to the host machine over USB and entered into recovery mode. Then enter on the host machine:
