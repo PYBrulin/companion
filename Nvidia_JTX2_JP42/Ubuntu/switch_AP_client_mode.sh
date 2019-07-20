@@ -12,6 +12,9 @@ set -x
 if nmcli d | grep "ardupilot"; then
 	# switch back to client mode
 	nmcli connection down ardupilot
+	echo 0 > /sys/module/bcmdhd/parameters/op_mode
+        service network-manager restart
+
 else
 	echo 2 > /sys/module/bcmdhd/parameters/op_mode
 	service network-manager restart
