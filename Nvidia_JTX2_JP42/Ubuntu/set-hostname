@@ -6,5 +6,5 @@ set -x
 . config.env
 
 ../../Common/Ubuntu/set-hostname
-
-perl -pe 's/tegra-ubuntu/apsync/' -i /etc/hosts
+repl_string="s/"$(hostname)"/apsync/"
+perl -pe $repl_string -i /etc/hosts
