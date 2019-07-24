@@ -9,7 +9,39 @@ set -e
 set -x
 
 . config.env
+# install TX2 flavoured version of apweb including fixes
 
-pushd ../../Common/Ubuntu/apweb
- ./install_apweb
+apt-get install -y libtalloc-dev
+
+sudo -u $NORMAL_USER -H bash <<EOF
+set -e
+set -x
+
+# auto start apweb
+APWEB_HOME=~/start_apweb
+rm -rf \$APWEB_HOME
+if [ ! -d \$APWEB_HOME ]; then
+    mkdir \$APWEB_HOME
+fi
+cp start_apweb.sh \$APWEB_HOME/
+cp autostart_apweb.sh \$APWEB_HOME/
+
+# we need to install a modified version of apweb, cloned form the ardupilot/apweb master repository
+# this repository includes defect fixes and the necessary adoptions for the TX2
+pushd ~/Github
+rm -rf APWeb
+git clone --recurse-submodules https://github.com/mtbsteve/APWeb.git
+pushd APWeb
+time (make clean | cat)
+time (make | cat)
+cp web_server \$APWEB_HOME
 popd
+popd
+
+EOF
+
+
+# add line below to bottom of /etc/rc.local to call start script
+LINE="/bin/bash -c '~$NORMAL_USER/start_apweb/autostart_apweb.sh'"
+perl -pe "s%^exit 0%$LINE\\n\\nexit 0%" -i /etc/rc.local
+
