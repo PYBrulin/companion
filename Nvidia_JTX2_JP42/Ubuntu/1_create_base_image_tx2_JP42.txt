@@ -32,8 +32,8 @@ su apsync
 cd ~
 
 # clone the Apsync git
-mkdir GitHub
-pushd GitHub
+mkdir Github
+pushd Github
 
 # insert here the link to the master repository
 # my repository until we have a stable version ready 
@@ -74,30 +74,28 @@ sudo ./4_setup_log_rotation # just keep 1 week of backups and compress
 # we will install mavproxy, however cmavnode will be used 
 sudo ./5_setup_mavproxy.sh # instant
 
-time sudo -E ./6_setup_video.sh # 1m
+time sudo -E ./6_setup_gstreamer.sh # this installs the gstreamer libraries needed for the Jetson TX2
 time sudo -E ./8_setup_cmavnode.sh # ~4m
 time sudo -E ./setup_mavlink-router # ~2m
 time sudo -E ./7_dflogger.sh # ~210s
-time sudo -E ./setup-video-streaming # 11s
+# install cherrypy and the UDP streaming capability
+# please edit the file start_udp_stream and enter the right gstreamer credentials for the camera used. By default, the parameters work for the TX2 onboard camera
+time sudo -E ./setup-video-streaming # 11s 
 
 time sudo -E apt-get install -y libxml2-dev libxslt1.1 libxslt1-dev
 time sudo pip install future lxml # 4m
 time sudo ./install_pymavlink # new version required for apweb #1m
-time sudo ./install_apweb # 2m
-
+# install APWeb. We are installing a modified version which supports APStreamline and the necessary TX2 modifications
+time sudo ./install_apweb # 2m 
+# Optionally install APStreamline. Note that you need to have meson and ninja installed. The script takes care but you may need to check that you also have pip3 installed
+sudo ./setup_APStreamline.sh
 
 Step 4: Testing
-# reboot and test image according to testing.txt
-sudo reboot
+# reboot and test image according to TX2-testing.txt instructions
 
-# test if AP is set up correctly and if you can connect from a remote computer
-ssh-copy-id apsync@10.0.1.128 #check the correct IP address for your installation with ifconfig 
-exit
-
-Now test according to instructions in ../../Common/Ubuntu/testing.txt
 
 # Step 5: cleanup
-time (pushd ~/GitHub/companion/Nvidia_JTX1/Ubuntu && sudo ./clean-for-imaging)
+sudo ./clean-for-imaging
 
 sudo poweroff
 
