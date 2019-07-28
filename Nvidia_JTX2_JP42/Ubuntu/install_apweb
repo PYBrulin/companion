@@ -26,12 +26,13 @@ fi
 cp start_apweb.sh \$APWEB_HOME/
 cp autostart_apweb.sh \$APWEB_HOME/
 
-# we need to install a modified version of apweb, cloned form the ardupilot/apweb master repository
+# we need to install a modified version of apweb to support APStreamline
 # this repository includes defect fixes and the necessary adoptions for the TX2
 pushd ~/Github
 rm -rf APWeb
-git clone --recurse-submodules https://github.com/mtbsteve/APWeb.git
+git clone -b video_streaming https://github.com/mtbsteve/APWeb.git
 pushd APWeb
+git submodule update --init --recursive
 time (make clean | cat)
 time (make | cat)
 cp web_server \$APWEB_HOME
