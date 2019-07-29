@@ -36,10 +36,3 @@ popd
 popd
 
 EOF
-
-
-# add line below to bottom of /etc/rc.local to call start script
-LINE="/bin/bash -c '~$NORMAL_USER/start_apweb/autostart_apweb.sh'"
-perl -pe "s%^exit 0%$LINE\\n\\nexit 0%" -i /etc/rc.local
-
-
