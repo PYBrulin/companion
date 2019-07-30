@@ -23,7 +23,7 @@ set -x
 # we need to install a modified version of APStreamline
 # includes defect fixes and the necessary adoptions for the TX2
 # please also follow the wiki for APStreamline on github
-pushd ~/Github
+pushd ~/GitHub
 rm -rf adaptive-streaming
 git clone -b video_streaming https://github.com/mtbsteve/APWeb.git
 pushd adaptive-streaming

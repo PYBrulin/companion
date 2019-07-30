@@ -32,8 +32,8 @@ su apsync
 cd ~
 
 # clone the Apsync git
-mkdir Github
-pushd Github
+mkdir GitHub
+pushd GitHub
 
 # insert here the link to the master repository
 # my repository until we have a stable version ready 
