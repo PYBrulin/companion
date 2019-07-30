@@ -32,8 +32,8 @@ su apsync
 cd ~
 
 # clone the Apsync git
-mkdir Github
-pushd Github
+mkdir GitHub
+pushd GitHub
 
 # insert here the link to the master repository
 # my repository until we have a stable version ready 
@@ -88,6 +88,7 @@ time sudo ./install_pymavlink # new version required for apweb #1m
 # install APWeb. We are installing a modified version which supports APStreamline and the necessary TX2 modifications
 time sudo ./install_apweb # 2m 
 # Optionally install APStreamline. Note that you need to have meson and ninja installed. The script takes care but you may need to check that you also have pip3 installed
+time sudo -E apt-get install -y python3-pip 
 sudo ./setup_APStreamline.sh
 
 Step 4: Testing
