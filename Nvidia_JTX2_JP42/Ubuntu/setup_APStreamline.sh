@@ -25,7 +25,7 @@ set -x
 # please also follow the wiki for APStreamline on github
 pushd ~/GitHub
 rm -rf adaptive-streaming
-git clone -b video_streaming https://github.com/mtbsteve/APWeb.git
+git clone https://github.com/mtbsteve/adaptive-streaming.git
 pushd adaptive-streaming
 meson build
 cd build
