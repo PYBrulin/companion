@@ -23,9 +23,9 @@ set -x
 # we need to install a modified version of APStreamline
 # includes defect fixes and the necessary adoptions for the TX2
 # please also follow the wiki for APStreamline on github
-pushd ~/Github
+pushd ~/GitHub
 rm -rf adaptive-streaming
-git clone -b video_streaming https://github.com/mtbsteve/APWeb.git
+git clone https://github.com/mtbsteve/adaptive-streaming.git
 pushd adaptive-streaming
 meson build
 cd build
@@ -36,10 +36,3 @@ popd
 popd
 
 EOF
-
-
-# add line below to bottom of /etc/rc.local to call start script
-LINE="/bin/bash -c '~$NORMAL_USER/start_apweb/autostart_apweb.sh'"
-perl -pe "s%^exit 0%$LINE\\n\\nexit 0%" -i /etc/rc.local
-
-

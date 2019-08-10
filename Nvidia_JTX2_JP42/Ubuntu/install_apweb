@@ -28,7 +28,7 @@ cp autostart_apweb.sh \$APWEB_HOME/
 
 # we need to install a modified version of apweb to support APStreamline
 # this repository includes defect fixes and the necessary adoptions for the TX2
-pushd ~/Github
+pushd ~/GitHub
 rm -rf APWeb
 git clone -b video_streaming https://github.com/mtbsteve/APWeb.git
 pushd APWeb
