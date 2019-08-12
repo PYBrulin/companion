@@ -6,4 +6,6 @@
 set -e
 set -x
 
+# set path for APStreamline
+export PATH="$PATH:/home/apsync/start_apstreamline/bin"
 ./web_server -p 80 -f 14755
