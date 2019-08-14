@@ -29,5 +29,5 @@ SOURCE_DEVICE=/dev/video1
 #  udpsink host=$STREAM_TO_IP port=$STREAM_TO_PORT
 
 # gst setup for ZED stereo camera. We are streaming the left camera view
-gst-launch-1.0 v4l2src device=$SOURCE_DEVICE ! video/x-raw, width=3840, height=1080 ! videocrop top=0 left=0 right=1920 bottom=0 ! tee name=t ! queue ! videoconvert ! omxh264enc ! video/x-h264, stream-format=byte-stream ! h264parse ! rtph264pay ! udpsink host=10.0.1.111 port=$STREAM_TO_PORT t. ! queue ! videoconvert
+gst-launch-1.0 v4l2src device=$SOURCE_DEVICE ! video/x-raw, width=3840, height=1080 ! videocrop top=0 left=0 right=1920 bottom=0 ! tee name=t ! queue ! videoconvert ! omxh264enc ! video/x-h264, stream-format=byte-stream ! h264parse ! rtph264pay ! udpsink host=$STREAM_TO_IP port=$STREAM_TO_PORT t. ! queue ! videoconvert
 
