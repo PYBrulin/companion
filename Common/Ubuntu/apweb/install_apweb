@@ -32,8 +32,8 @@ cp autostart_apweb.sh \$APWEB_HOME/
 
 pushd ~/GitHub
  rm -rf APWeb
-# git clone --recurse-submodules https://github.com/peterbarker/APWeb
-git clone --recurse-submodules https://github.com/ArduPilot/APWeb.git
+git clone --recurse-submodules https://github.com/peterbarker/APWeb
+# git clone --recurse-submodules https://github.com/ArduPilot/APWeb.git
 
 pushd APWeb
 
