@@ -1,19 +1,15 @@
 #!/bin/bash
 
-# install APWeb to provide a web interface for configuring drone (etc)
-
 if [ $(id -u) -ne 0 ]; then
    echo >&2 "Must be run as root"
    exit 1
 fi
 
-# if [ -z "$TELEM_SERIAL_PORT" ]; then
-#     echo 'TELEM_SERIAL_PORT must be set (e.g. "/dev/ttyS1" or "/dev/ttyMFD1")'
-#     exit 1
-# fi
-
 set -e
 set -x
+
+. config.env
+# install TX2 flavoured version of apweb including fixes
 
 apt-get install -y libtalloc-dev
 
@@ -30,19 +26,17 @@ fi
 cp start_apweb.sh \$APWEB_HOME/
 cp autostart_apweb.sh \$APWEB_HOME/
 
+# we need to install a modified version of apweb to support APStreamline
+# this repository includes defect fixes and the necessary adoptions for the TX2
 pushd ~/GitHub
- rm -rf APWeb
-# git clone --recurse-submodules https://github.com/peterbarker/APWeb
-git clone --recurse-submodules https://github.com/ArduPilot/APWeb.git
-
+rm -rf APWeb
+git clone -b video_streaming https://github.com/mtbsteve/APWeb.git
 pushd APWeb
-
-  # git checkout apsync
-  # git submodule update --init
-  time (make clean | cat)
-  time (make | cat)
-  cp web_server \$APWEB_HOME
- popd
+git submodule update --init --recursive
+time (make clean | cat)
+time (make | cat)
+cp web_server \$APWEB_HOME
+popd
 popd
 
 EOF
@@ -51,3 +45,4 @@ EOF
 # add line below to bottom of /etc/rc.local to call start script
 LINE="/bin/bash -c '~$NORMAL_USER/start_apweb/autostart_apweb.sh'"
 perl -pe "s%^exit 0%$LINE\\n\\nexit 0%" -i /etc/rc.local
+

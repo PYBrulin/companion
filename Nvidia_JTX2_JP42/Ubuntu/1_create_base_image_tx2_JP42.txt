@@ -1,0 +1,112 @@
+# TX2 setup script for use as companion computer with Jetpack 4.2 release
+
+# STEP1: install NVidia image onto JTX2 (skip this step if you already have a factory image created for current release of Jetpack)
+
+# Download the SDKManager to your host machine and follow all the instructions here: 
+# https://developer.nvidia.com/embedded/jetpack
+# If you are using the Auvidea J120 breakout board or another Auvidea board, install the required drivers as described at:
+# https://auvidea.eu/firmware
+# Download the corresponding firmare version for your board and follow the instructions provided by Auvidea. At the time of this writeup, the Auvidea firmare 2.0 as of May 2019 has to be used.
+
+
+# STEP2: backup the TX2 kernel before installing APSync so that you can roll back in case something breaks or messes up
+
+# Follow the steps as explained here: https://elinux.org/Jetson/TX2_Cloning
+# The TX2 must be connected to the host machine over USB and entered into recovery mode. Then enter on the host machine:
+
+cd home/nvidia/nvidia_sdk/JetPack_4.2_Linux_P3310/Linux_for_Tegra
+sudo ./flash.sh -r -k APP -G mybackup_Jetpack42.img jetson-tx2 mmcblk0p1
+# for "mybackup_Jetpack42" add your desired name for the backup image file. This will take about 30 minutes.
+
+
+# STEP 3 : install apsync packages on the TX2:
+# power on the TX
+# log onto TX with your credentials as created during the installation of Jetpack 4.2.
+# create an apsync user:
+
+sudo useradd -s /bin/bash -m -U -G sudo,netdev,users,dialout,video apsync
+sudo passwd apsync # apsync
+
+# logon as apsync
+su apsync
+cd ~
+
+# clone the Apsync git
+mkdir GitHub
+pushd GitHub
+
+# insert here the link to the master repository
+# my repository until we have a stable version ready 
+git clone --single-branch --branch "next-tx2" https://github.com/mtbsteve/companion.git
+
+pushd companion/Nvidia_JTX2_JP42/Ubuntu
+sudo ./set-hostname   # reset the machine's hostname to apsync
+
+sudo apt-get autoremove -y # remove packages that were automatically
+# installed to satisfy dependencies for other packages and are now no longer needed
+
+# The TX2 will autologin with apsync user after 5 seconds. During that time, you can normally logon to the TX2 console with any other user. 
+sudo ./change-autologin-user_1804.sh # we go for a timed login instead. After 5 seconds, the TX2 will automatically boot under apsync user.
+sudo ./remove-unattended-upgrades # disable unattended upgrades of Ubuntu
+sudo ./ensure_rc_local.sh #  add /etc/local.rc file to allow to execute commands at system startup
+
+sudo reboot # ensure hostname correct / autologin working
+
+pushd GitHub/companion/Nvidia_JTX2_JP42/Ubuntu
+time sudo -E ./2_install_packages.sh # 20m
+time sudo -E ./install_niceties || echo "Failed" # 20s
+
+# setup of the ardupilot access point
+sudo ./3_wifi_access_point_JP42.sh
+# the TX2 will go into AP mode when you logon under apsync and will set up an access point with the SSID ardupilot and the IP address 10.0.1.128
+# You can swap between AP mode and wifi client mode by executing from the apsync home directory:
+# sudo ~/switch_AP_client_mode.sh
+
+# Decide which board you are using to connect to the flight controller via mavlink:
+# If you are using the J17 connector on the Nvidia TX2 development board
+# then  edit the config.env file and set 
+# export TELEM_SERIAL_PORT=/dev/ttyTHS2
+# if you are using the Auvidea J120 board, then set
+# export TELEM_SERIAL_PORT=/dev/ttyTHS1
+
+
+sudo ./4_setup_log_rotation # just keep 1 week of backups and compress  
+# we will install mavproxy, however cmavnode will be used 
+sudo ./5_setup_mavproxy.sh # instant
+
+time sudo -E ./6_setup_gstreamer.sh # this installs the gstreamer libraries needed for the Jetson TX2
+time sudo -E ./8_setup_cmavnode.sh # ~4m
+time sudo -E ./setup_mavlink-router # ~2m
+time sudo -E ./7_dflogger.sh # ~210s
+# install cherrypy and the UDP streaming capability
+# please edit the file start_udp_stream and enter the right gstreamer credentials for the camera used. By default, the parameters work for the TX2 onboard camera
+time sudo -E ./setup-video-streaming # 11s 
+
+time sudo -E apt-get install -y libxml2-dev libxslt1.1 libxslt1-dev
+time sudo pip install future lxml # 4m
+time sudo ./install_pymavlink # new version required for apweb #1m
+# install APWeb. We are installing a modified version which supports APStreamline and the necessary TX2 modifications
+time sudo ./install_apweb # 2m 
+# Optionally install APStreamline. Note that you need to have meson and ninja installed. The script takes care but you may need to check that you also have pip3 installed
+time sudo -E apt-get install -y python3-pip 
+sudo ./setup_APStreamline.sh
+
+Step 4: Testing
+# reboot and test image according to TX2-testing.txt instructions
+
+
+# Step 5: cleanup
+sudo ./clean-for-imaging
+
+sudo poweroff
+
+# Step 6: create backup image with ApSync installed
+
+# Follow the steps as explained here: https://elinux.org/Jetson/TX2_Cloning
+# The TX2 must be connected to the host machine over USB and entered into recovery mode. Then enter on the host machine:
+
+cd home/nvidia/nvidia_sdk/JetPack_4.2_Linux_P3310/Linux_for_Tegra
+sudo ./flash.sh -r -k APP -G mybackup_Jetpack42_apsync.img jetson-tx2 mmcblk0p1
+# for "mybackup_Jetpack42" add your desired name for the backup image file. This will take about 30 min
+
+# Done!

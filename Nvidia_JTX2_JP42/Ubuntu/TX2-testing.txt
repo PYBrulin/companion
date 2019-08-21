@@ -37,7 +37,7 @@ param fetch
 
 # ensure you can connect multiple GCS at the same time!
 
-# make sure LOG_BACKEND_TYPE is 2
+# make sure LOG_BACKEND_TYPE is 2 or 3
 # make sure dflogger is creating dataflash logs:
 # arm the vehicle *and turn the safety off*, then:
 watch "ls dflogger/dataflash -lt | head"
@@ -49,14 +49,14 @@ watch "ls dflogger/dataflash -lt | head"
 # Test Each of Tower on Android, QGC on Android, QGC on Linux, MP on Windows:
  # can you connect to the vehicle?
  # can you control the vehicle?
- Test UDP port 5600 streaming works to:
-  QGC on Linux
-  QGC on Android
-  Tower on Android (need to change setting!)
-  Mission Planner on Windows
 
 # Video Streaming testing:
- Use a web browser to connect on port 8000; make sure start/stop work
+ Use a web browser to connect on port 10.0.1.128:8000; make sure start/stop work
+Test UDP port 5600 video streaming works to:
+  QGC on Linux
+  QGC on Android
+  Mission Planner on Windows
+  Solex on Android
 
 
 # web interface testing
@@ -73,15 +73,6 @@ watch "ls dflogger/dataflash -lt | head"
  
   Click "FileSystem Access"
     Ensure you can download a file
-
-  Click "System Control" link
-   Change WiFi access point name and key
-   Reboot Device
-   Make sure you can connect to renamed AP
-
-  Click "System Control" link
-     Test "Reboot Flight Board"
-     Test "Reboot CC"
 
   Click "System Status" link
     Click "System" tab
@@ -107,21 +98,15 @@ watch "ls dflogger/dataflash -lt | head"
     Click "Transmitter" tab
       Ensure values are updating
   
-  Click "Calibration" link
-
-    Click "Accelerometer" tab
-      Click "Start Six Axis Accelerometer Calibration"
-        Should ge a message to place vehicle level
-      Ensure values for sensor state are updating
-
-    Click "Magnetometer" tab
-      Click "Start Magnetometer Calibration"
-        Should get a message, calibration started"
-      Ensure sensor state values are updating
-
   Click "Flight Parameters" link
     Change "Parameter Category" dropdown, ensure list of parameter is reduced
     Add an entry into the "Search parameters" box, ensure list is filtered appopriately
     Change a parameter value to something distinct
-    Reboot the flight controller and reload the page, ensure the parameter value has stuck (or use a GCS to check)
-    
+
+# Test APStreamline
+Click Video Streaming
+Video livestreams can be launched using RTSP. On selecting the desired interface and starting the RTSP Server, the APWeb server will spawn the Stream Server process. The stream server will search for all the V4L2 cameras available in /dev/. It will query the capabilities of all these cameras and select hardware encoding or software encoding accordingly. The list of available cameras can be refreshed by simply stopping and starting the server.
+The RTSP streams can be viewed using any RTSP player. VLC is a good choice.
+QGC does support RTSP and  can be configured accordingly.
+For all details on APStreamline see the readme at https://github.com/shortstheory/adaptive-streaming
+
