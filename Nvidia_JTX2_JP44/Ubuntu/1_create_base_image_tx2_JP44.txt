@@ -39,9 +39,6 @@ pushd companion/Nvidia_JTX2_JP44/Ubuntu
 # In case you have not set the hostname to apsync during the Jetpack 4.4 install, then set it now:
 sudo ./set-hostname   # reset the machine's hostname to apsync
 
-sudo apt-get autoremove -y # remove packages that were automatically
-# installed to satisfy dependencies for other packages and are now no longer needed
-
 # In case you have not enabled the autologin for the apsync user during the Jetpack 4.4 install, you may run this script:
 sudo ./change-autologin-user_1804.sh 
 
