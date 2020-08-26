@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+set -x
+
+. config.env
+
+# apt-get remove -y unattended-upgrades
+# disable unattended upgrades for Ubuntu 18.4
+perl -pe 's/Upgrade "1"/Upgrade "0"/' -i /etc/apt/apt.conf.d/20auto-upgrades

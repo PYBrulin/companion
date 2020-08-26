@@ -1,0 +1,113 @@
+Testing regime for new image:
+-----------------------------
+# make sure (USB?) ethernet is unplugged!
+
+# Check if AP exists
+
+# Connect to AP
+
+# ssh into device
+ssh apsync@10.0.1.128
+
+# Check "screen -list" includes mavlink-router, DataFlashLogger, cherrypy:
+screen -list
+
+screen -list
+There are screens on:
+	1754.cherrypy	(12/08/2017 03:00:54 AM)	(Detached)
+	1733.DataFlashLogger	(12/08/2017 03:00:54 AM)	(Detached)
+	1704.mavlink-router	(12/08/2017 03:00:54 AM)	(Detached)
+
+# Check APWeb is running:
+sudo screen -list
+
+ps -ef | grep [w]eb_server
+root      5726  5709  0 16:06 ?        00:00:00 ./web_server -p 80 -f 14755
+
+# ensure mavproxy starts on the apsync image:
+mavproxy.py --master :14550 --source-system=56
+# make sure you can fetch parameters:
+param fetch
+param status
+
+# Can you connect using a GCS using the broadcast packets on port 14550?
+# on host machine:
+mavproxy.py --mav10 --master :14550 --source-system=89
+# make sure you can fetch parameters:
+param fetch
+
+# ensure you can connect multiple GCS at the same time!
+
+# make sure LOG_BACKEND_TYPE is 2 or 3
+# make sure dflogger is creating dataflash logs:
+# arm the vehicle *and turn the safety off*, then:
+watch "ls dflogger/dataflash -lt | head"
+
+
+# can you connect to to the AP using a mobile phone and/or tablet?
+
+# BEFORE testing the following, disable internet access on the phone!
+# Test Each of Tower on Android, QGC on Android, QGC on Linux, MP on Windows:
+ # can you connect to the vehicle?
+ # can you control the vehicle?
+
+# Video Streaming testing:
+ Use a web browser to connect on port 10.0.1.128:8000; make sure start/stop work
+Test UDP port 5600 video streaming works to:
+  QGC on Linux
+  QGC on Android
+  Mission Planner on Windows
+  Solex on Android
+
+
+# web interface testing
+# ! ENSURE NO GCS IS RUNNING BEFORE DOING THESE INTERFACE TESTS !
+# this testing script must be run through for:
+#   firefox
+#   chromium-browser
+#   edge
+  Ensure you get a response when connecting to http://10.0.1.128/
+  Click "Download DataFlash Logs"
+    Download a dataflash log
+    Ensure sizes match on download file and original
+      Check checksums on files match
+ 
+  Click "FileSystem Access"
+    Ensure you can download a file
+
+  Click "System Status" link
+    Click "System" tab
+      Ensure values are updating
+      Adjust refresh rate
+        Ensure values are updating faster
+
+    Click "IMU" tab
+      Ensure graphs respond to flight controller movement
+      Ensure tables respond to flight controller movement
+      
+    Click "Baro" tab
+      (n.b.) Rover doesn't supply Baro data
+      Ensure graphs respond to flight controller movement
+      Ensure tables respond to flight controller movement
+  
+    Click "GPS" tab
+      Ensure table values are updating
+  
+    Click "EKF" tab
+      Ensure values are updating
+      
+    Click "Transmitter" tab
+      Ensure values are updating
+  
+  Click "Flight Parameters" link
+    Change "Parameter Category" dropdown, ensure list of parameter is reduced
+    Add an entry into the "Search parameters" box, ensure list is filtered appopriately
+    Change a parameter value to something distinct
+
+# Test APStreamline
+Click Video Streaming
+Video livestreams can be launched using RTSP. On selecting the desired interface and starting the RTSP Server, the APWeb server will spawn the Stream Server process. The stream server will search for all the V4L2 cameras available in /dev/. It will query the capabilities of all these cameras and select hardware encoding or software encoding accordingly. The list of available cameras can be refreshed by simply stopping and starting the server.
+The RTSP streams can be viewed using any RTSP player. VLC is a good choice.
+QGC does support RTSP and  can be configured accordingly.
+For all details on APStreamline see the readme at https://github.com/shortstheory/adaptive-streaming
+
