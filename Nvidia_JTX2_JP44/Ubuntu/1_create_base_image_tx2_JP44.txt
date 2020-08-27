@@ -8,7 +8,9 @@
 
 # If you are using the Auvidea J120 breakout board or another Auvidea board, install the required drivers as described at:
 # https://auvidea.eu/firmware
-
+# IMPORTANT: the current Auvidea Firmware for Jetpack 4.4 contains a defect - when you perform a apt-get dist-upgrade
+# the Jetpack updates will disable the fan control. Therefore, the upgrade got disabled in the
+# Common/Ubuntu/install_packages.sh script. This will be changed once Auvidea releases a new version
 
 # STEP2: backup the TX2 kernel before installing APSync so that you can roll back in case something breaks or messes up
 
@@ -18,7 +20,7 @@
 # power on the TX
 # log onto TX with your credentials as created during the installation of Jetpack 4.2.
 
-# Important - there is a defect in the current Jetpack 4.4 release - the Denver cores are disabled by default
+# IMPORTANT: - there is a defect in the current Jetpack 4.4 release - the Denver cores are disabled by default
 # even if you enable power Mode 0. In order to enable, perform the following steps:
 # 1. Open the file /boot/extlinux/extlinux.conf and delete "isocpus=1-2" then add “isolcpus=” after the APPEND
 # 2. After reboot, this change should take effect. 
