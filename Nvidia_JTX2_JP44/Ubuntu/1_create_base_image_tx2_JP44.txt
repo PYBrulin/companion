@@ -17,6 +17,13 @@
 # STEP 3 : install apsync packages on the TX2:
 # power on the TX
 # log onto TX with your credentials as created during the installation of Jetpack 4.2.
+
+# Important - there is a defect in the current Jetpack 4.4 release - the Denver cores are disabled by default
+# even if you enable power Mode 0. In order to enable, perform the following steps:
+# 1. Open the file /boot/extlinux/extlinux.conf and delete "isocpus=1-2" then add “isolcpus=” after the APPEND
+# 2. After reboot, this change should take effect. 
+# for more details see: https://forums.developer.nvidia.com/t/cannot-enable-denver-cores-for-tx2-jetpack-4-4-dp/124708/53
+
 # create an apsync user in case you did not set it during the Jepack 4.4 install:
 
 sudo useradd -s /bin/bash -m -U -G sudo,netdev,users,dialout,video apsync
