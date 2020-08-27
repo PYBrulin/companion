@@ -22,6 +22,7 @@ There are screens on:
 sudo screen -list
 
 ps -ef | grep [w]eb_server
+# the result should look something like this:
 root      5726  5709  0 16:06 ?        00:00:00 ./web_server -p 80 -f 14755
 
 # ensure mavproxy starts on the apsync image:
