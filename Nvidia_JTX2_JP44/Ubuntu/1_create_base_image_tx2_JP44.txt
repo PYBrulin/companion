@@ -81,6 +81,12 @@ time sudo -E ./6_setup_gstreamer.sh # this installs the gstreamer libraries need
 time sudo -E ./8_setup_cmavnode.sh # ~4m
 time sudo -E ./setup_mavlink-router # ~2m
 time sudo -E ./7_dflogger.sh # ~210s
+
+# If you are using a SD card to store the dataflash logs /recommended) you can mount it permanently 
+# 1. run sudo blkid and look for the entry of the sd card file system
+# 2. edit /etc/fstab and add the following line at the bottom of the file:
+# UUID=<the UUID of your SD card filesystem>  /home/apsync/dflogger/dataflash  ext4 defaults 0 1 
+
 # install cherrypy and the UDP streaming capability
 # please edit the file start_udp_stream and enter the right gstreamer credentials for the camera used. By default, the parameters work for the TX2 onboard camera
 time sudo -E ./setup-video-streaming # 11s 
